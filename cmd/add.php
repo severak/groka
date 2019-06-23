@@ -16,7 +16,9 @@ $html = $bot->get($url);
 if (!$html) die('cannot download this');
 
 $info = $bot->analyze($html);
-if (!$info) die('cannot analyze');
+if (!$info) die('cannot analyze HTML');
+
+if (!isset($info['title'])) die('cannot find title');
 
 
 $info['title'] = cleantext($info['title']);
@@ -28,4 +30,6 @@ $g = new groonga(GROONGA_URL);
 
 if ($g->load(['table'=>'groka'], $info)) {
 	echo 'OK';
+} else {
+	echo 'ERROR - cannot save';
 }

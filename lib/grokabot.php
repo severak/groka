@@ -31,7 +31,10 @@ class grokabot
 		
 		$info = [];
 		
-		$info['title'] = (string) $xml->xpath('/html/head/title')[0];
+		$titles = $xml->xpath('/html/head/title');
+		if (!isset($titles[0])) return false;
+		
+		$info['title'] = (string) $titles[0];
 		
 		foreach ($xml->xpath('/html/head/meta') as $meta) {
 			if ($meta['property']=='og:description') {
