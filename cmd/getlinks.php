@@ -49,11 +49,27 @@ function absolutize($base, $url)
 		return $url; // already absolute
 	}
 	
+	if (empty($origin['path'])) $origin['path'] = '';
+	
+	if (strpos($target['path'], '/')===0) {
+		// absolute link
+		return $origin['scheme'] . '://' . $origin['host'] . $target['path'];
+	}
+	
 	if (strpos($target['path'], './')===false) {
-		return $origin['scheme'] . '://' . $origin['host'] . dirname($origin['path'])  . '/' . $target['path'];
+		return $origin['scheme'] . '://' . $origin['host'] . oneup($origin['path'])  . '/' . $target['path'];
 	}
 	
 	// not resolving paths yet, sorry
 	
 	return false;
+}
+
+function oneup($path)
+{
+	if ($path=='') return '';
+	
+	if ($path=='/') return '/';
+	
+	return dirname($path);
 }
