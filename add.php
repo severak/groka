@@ -112,6 +112,7 @@ h1 small { font-size: 50%; }
 h2  a { text-decoration: none; }
 input, button { border: 1px solid green; }
 .keyword { background-color: yellow; }
+.error { color: red; }
 </style>
 </body>
 </html>
