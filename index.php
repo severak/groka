@@ -68,7 +68,7 @@ if (!empty($_GET['q'])) {
 
 ?>
 <hr>
-<small><a href="https://github.com/severak/groka">about project</a> * this instance is run by <?php echo GROKA_PROVIDER; ?></small>
+<small><a href="https://github.com/severak/groka">about project</a> * this instance is run by <?php echo GROKA_PROVIDER; ?> * <a href="add.php">add to index</a></small>
 </div>
 <style>
 body { font-family: sans-serif; }
