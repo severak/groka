@@ -1,18 +1,31 @@
 <?php
 class grokabot
 {
+    public $userAgent = 'grokabot';
+    public $status = -1;
+    public $contentType = 'application/octet-stream';
+    public $url = '';
+
 	function get($url)
 	{
-		// todo: robots.txt
+		$this->status = -1;
+		$this->contentType = 'application/octet-stream';
+		$this->url = $url;
+
 		$curl = curl_init();
 		curl_setopt_array($curl, [
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_URL => $url,
-			CURLOPT_USERAGENT => 'grokabot',
+            CURLOPT_FOLLOWLOCATION => false,
+			CURLOPT_USERAGENT => $this->userAgent,
 			CURLOPT_CAINFO => __DIR__ . '/cacert.pem',
 			CURLOPT_CAPATH => __DIR__ . '/cacert.pem'
 		]);
 		$resp = curl_exec($curl);
+
+		$this->status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+		$this->contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+		$this->url = curl_getinfo($curl, CURLINFO_REDIRECT_URL);
 		
 		curl_close($curl);
 		
