@@ -4,7 +4,7 @@ class groonga
 {
 	protected $_url;
 
-	function __construct($url)
+	function __construct($url='http://localhost:10041')
 	{
 		$this->_url = $url;
 	}
