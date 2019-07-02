@@ -10,7 +10,7 @@ require "lib/utils.php";
 </head>
 <body>
 <div class="page">
-<h1>groka <small>your own personal google</small></h1>
+<h1><a href="/">groka</a> <small>your own personal google</small></h1>
 <form>
 	<input type="search" name="q" placeholder="holy grail, amber room" <?php if (isset($_GET['q'])) echo 'value="' . $_GET['q'] . '"';  ?> >
 	<button>grok!</button> 
@@ -79,7 +79,7 @@ body { font-family: sans-serif; }
 .page { max-width: 50em; margin: 1em auto; }
 h1, h2, hr, a { color: green; }
 h1 small { font-size: 50%; }
-h2  a { text-decoration: none; }
+h1 a, h2  a { text-decoration: none; }
 input, button { border: 1px solid green; }
 .keyword { background-color: yellow; }
 .error { color: red; }
