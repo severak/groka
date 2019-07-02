@@ -17,7 +17,7 @@ if ($g->select(['table'=>'groka'])) {
 echo 'setting up database...' . PHP_EOL;
 
 // setup tables
-if (!$g->table_create(['name'=>'groka', 'flags'=>'TABLE_HASH_KEY', 'key_type'=>'ShortText'])) {
+if (!$g->table_create(['name'=>'groka', 'flags'=>'TABLE_PAT_KEY', 'key_type'=>'ShortText'])) {
 	die('problem with creating table');
 }
 $g->column_create(['table'=>'groka', 'name'=>'title', 'type'=>'ShortText']);
