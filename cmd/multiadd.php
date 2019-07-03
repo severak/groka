@@ -7,6 +7,7 @@ require __DIR__ . '/../lib/utils.php';
 $sleep = isset($argv[1]) ? intval($argv[1]) : 0;
 
 $bot = new grokabot;
+$bot->userAgent = GROKABOT_USERAGENT;
 $g = new groonga(GROONGA_URL);
 
 while($url = fgets(STDIN)){
@@ -21,35 +22,14 @@ while($url = fgets(STDIN)){
 		sleep($sleep);
 	}
 	
-	$html = $bot->get($url);
+	$response = $bot->add($url, $g);
 
-	if (!$html) {
-		echo 'ERR - cannot download ' . $url . PHP_EOL;
-		continue;
-	}
+	if ($response===true) {
+        echo 'OK ' . $url . PHP_EOL;
+    } else {
+	    echo 'ERR ' . $url . ' - ' . $response . PHP_EOL;
+    }
 
-	$info = $bot->analyze($html);
-	if (!$info) {
-		echo 'ERR - cannot analyze ' . $url . PHP_EOL;
-		continue;
-	}
-
-	if (!isset($info['title'])) {
-		echo 'ERR - find title ' . $url . PHP_EOL;
-		continue;
-	}
-
-	$info['title'] = cleantext($info['title']);
-	$info['description'] = cleantext($info['description']);
-	$info['text'] = cleantext($info['text']);
-	$info['_key'] = $url;
-
-	if ($g->load(['table'=>'groka'], $info)) {
-		echo 'OK ' . $url . PHP_EOL;
-	} else {
-		echo 'ERROR - cannot save' . $url . PHP_EOL;
-	}
-	
 }
 
 

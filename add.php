@@ -15,38 +15,17 @@ require "lib/groonga.php";
 <h1><a href="/">groka</a> <small>your own personal google</small></h1>
 <?php
 function add_url($url) {
-	$bot = new grokabot;
-	$html = $bot->get($url);
+    $bot = new grokabot;
+    $bot->userAgent = GROKABOT_USERAGENT;
+    $g = new groonga(GROONGA_URL);
 
-	if (!$html) {
-		echo '<p class="error">error - cannot download '.$url.'</p>';
-		return;
-	}
+    $response = $bot->add($url, $g);
 
-	$info = $bot->analyze($html);
-	if (!$info) {
-		echo '<p class="error">error - cannot analyze HTML</p>';
-		return;
-	}
-
-	if (!isset($info['title'])) {
-		echo '<p class="error">error  - cannot find title tag</p>';
-		return;
-	}
-
-
-	$info['title'] = cleantext($info['title']);
-	$info['description'] = cleantext($info['description']);
-	$info['text'] = cleantext($info['text']);
-	$info['_key'] = $url;
-
-	$g = new groonga(GROONGA_URL);
-
-	if ($g->load(['table'=>'groka'], $info)) {
-		echo '<p class="success">OK, added to index.</p>';
-	} else {
-		echo '<p class="error">error  - cannot save</p>';
-	}
+    if ($response===true) {
+        echo '<p class="success">OK! Your page was added to index!</p>';
+    } else {
+        echo '<p class="error">Error while adding to index: ' . $response . '</p>'. PHP_EOL;
+    }
 }
 
 

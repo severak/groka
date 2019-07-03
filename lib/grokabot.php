@@ -37,6 +37,7 @@ class grokabot
 		$dom = new DOMDocument();
 		libxml_use_internal_errors(true);
 		$dom->loadHTML($html);
+		libxml_use_internal_errors(false);
 		
 		if (!$dom) return false;
 		
@@ -68,5 +69,64 @@ class grokabot
 		
 		return $info;
 	}
+
+	function add($url, groonga $g)
+    {
+        $oldUrlToRemove = false;
+
+        // TODO - there is something mysterious - some redirects returns false on curl_exec
+        // See http://vmezerach.svita.cz/autor vs something other
+        $html = $this->get($url);
+
+        if (in_array($this->status, [301, 302])) {
+            $newUrl = $this->url;
+            if (str_replace('https://', 'http://', $newUrl)==$url) {
+                // this is HTTP to HTTPS upgrade, we should follow it
+                $html = $this->get($newUrl);
+                $oldUrlToRemove = $url;
+                // echo 'INFO: HTTP upgrade' . PHP_EOL;
+            } else {
+                $html = $this->get($newUrl);
+                // echo 'INFO: redir to ' . $newUrl . PHP_EOL;
+            }
+            $url = $newUrl;
+        }
+
+        if (!$html) return 'cannot download ' . $url;
+
+        if ($this->status!=200) {
+            return 'status '.$this->status;
+        }
+
+        $mimeType = strtok($this->contentType, ';');
+        if ($mimeType=='text/html') {
+            $info = $this->analyze($html);
+            if (!isset($info['title'])) return 'cannot find title';
+
+            $info['_key'] = $url;
+            $info['title'] = cleantext($info['title']);
+            $info['description'] = cleantext($info['description']);
+            $info['text'] = cleantext($info['text']);
+            if (!$info) return 'cannot analyze HTML';
+        } elseif ($mimeType=='text/plain') {
+            $info['_key'] = $url;
+            $info['title'] = basename(parse_url($url, PHP_URL_PATH));
+            $info['description'] = $info['title']; // TODO - something better, like first non blank line
+            $info['text'] = $html;
+        } else {
+            return 'unsupported mime type ' . $mimeType;
+        }
+
+        if ($g->load(['table'=>'groka'], $info)) {
+
+            if ($oldUrlToRemove) {
+                $g->delete(['table'=>'groka', 'key'=>$url]);
+            }
+
+            return true;
+        }
+
+        return 'cannot save';
+    }
 	
 }
