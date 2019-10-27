@@ -21,12 +21,6 @@ simple frontend/backend which mades web fulltext search engine out of [Groonga][
 * `remove.php` - removes URL from index
 * `setup.php` - setups groka database
 
-## demo instance?
-
-See http://groka.svita.cz/
-
-It only search in certain parts of the internet, namely some sections of [tildeverse][].
-
 ## name?
 
 It's named after [The Groke][3] from Moomins books. Initialy chosen because of name similarity to Groonga, but it has 
